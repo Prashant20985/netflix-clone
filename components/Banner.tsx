@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { baseUrl } from '../constants/movie'
 import { Movie } from '../typings'
 import { FaPlay } from 'react-icons/fa'
@@ -16,13 +16,22 @@ function Banner({ netflixOriginals }: Props) {
 
   const [currentMovie ,setCurrentMovie] = useRecoilState(movieState)
 
+  const [state, setState] = useState({ num: 0 });
+  const counter = useRef(0);
+
   const [movie, setMovie] = useState<Movie | null>(null)
+
   useEffect(() => {
-    setMovie(
-      netflixOriginals[Math.floor(Math.random() * netflixOriginals.length)]
-    )
-  }, [netflixOriginals])
-  console.log(movie)
+    if (counter.current < counter.current + 1) {
+      counter.current += 1;
+      const timer = setTimeout(() => setState({ num: state.num + 15 }), 10000);
+      setMovie(
+        netflixOriginals[Math.floor(Math.random() * netflixOriginals.length)]
+      )
+
+      return () => clearTimeout(timer);
+    }
+  }, [netflixOriginals,state]);
 
   return (
     <div className="flex flex-col space-y-2 py-16 md:space-y-4 lg:h-[65vh] lg:justify-end lg:pb-12">
